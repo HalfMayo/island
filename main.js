@@ -1,8 +1,9 @@
 import * as THREE from 'three';
-import {OrbitControls} from "three/addons";
+import {GLTFLoader, OrbitControls} from "three/addons";
 
 //SETUP (RENDERER, SCENE, CAMERA)
 const renderer = new THREE.WebGLRenderer({antialias: true});
+renderer.shadowMap.enabled = true;
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x49bce3);
@@ -16,7 +17,7 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 )
-camera.position.set(-10, 30, 30);
+camera.position.set(0, 25, -30);
 
 window.addEventListener('resize', function() {
     camera.aspect = window.innerWidth/window.innerHeight;
@@ -26,7 +27,6 @@ window.addEventListener('resize', function() {
 
 //ORBIT CONTROLS
 const orbit = new OrbitControls(camera, renderer.domElement)
-orbit.update();
 
 //RAYCASTER
 const raycaster = new THREE.Raycaster();
@@ -38,11 +38,24 @@ window.addEventListener('mousemove', function(e) {
     mousePosition.y = -(e.clientY/window.innerHeight) * 2 + 1;
 });
 
-//MESHES
-const boxGeometry = new THREE.BoxGeometry(1,1,1);
-const boxMaterial = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
-const box = new THREE.Mesh(boxGeometry, boxMaterial);
-scene.add(box);
+//3D MODELS LOADER
+const loader = new GLTFLoader();
+const island = new URL('./src/island.glb', import.meta.url).href;
+loader.load(island, function(gltf) {
+    const model = gltf.scene;
+    scene.add(model);
+    model.position.set(0, 0, 0);
+    model.rotation.set(0, Math.PI / 6, 0);
+}, undefined, function(error) {
+    console.log(error);
+})
+
+//LIGHTS
+const ambient = new THREE.AmbientLight(0xffffff);
+const directional = new THREE.DirectionalLight(0xFFFFFF, 0.5);
+directional.position.set(30, 30, 0);
+scene.add(ambient);
+scene.add(directional)
 
 function animate() {
     renderer.render(scene, camera);
