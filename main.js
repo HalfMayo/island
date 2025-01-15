@@ -57,9 +57,73 @@ directional.position.set(30, 30, 0);
 scene.add(ambient);
 scene.add(directional)
 
-function animate() {
-    renderer.render(scene, camera);
-}
 
 renderer.setAnimationLoop(animate);
 
+function animate() {
+    renderer.render(scene, camera);
+
+    raycaster.setFromCamera(mousePosition, camera);
+    const intersectedObjs = raycaster.intersectObjects(scene.children);
+    const meshes = ['ocean', 'island', 'beach', 'lighthouse', 'church', 'houses', 'fishBarracks', 'dock'];
+    switch(intersectedObjs[0]?.object.name) {
+        case 'ocean':
+            outline(meshes, intersectedObjs, 'ocean');
+            break;
+        case 'island':
+            outline(meshes, intersectedObjs, 'island');
+            break;
+        case 'beach':
+            outline(meshes, intersectedObjs, 'beach');
+            break;
+        case 'lighthouse':
+            outline(meshes, intersectedObjs, 'lighthouse');
+            break;
+        case 'church':
+            outline(meshes, intersectedObjs, 'church');
+            break;
+        case 'houses':
+            outline(meshes, intersectedObjs, 'houses');
+            break;
+        case 'fishBarracks':
+            outline(meshes, intersectedObjs, 'fishBarracks');
+            break;
+        case 'dock':
+            outline(meshes, intersectedObjs, 'dock');
+            break;
+        default:
+            meshes.forEach(el => removeOutline(el));
+    }
+}
+
+function outline(meshes, objsArr, meshName) {
+    const outlineName = meshName + 'Outline';
+
+    const otherMeshes = meshes.slice();
+    otherMeshes.splice(otherMeshes.indexOf(meshName), 1);
+    otherMeshes.forEach(el => removeOutline(el));
+
+    if(objsArr[0]?.object.name === meshName) {
+        const outline = scene.getObjectByName(outlineName);
+        if(!outline) {
+            const outlineMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.BackSide});
+            const outlineMesh = new THREE.Mesh(objsArr[0]?.object.geometry, outlineMaterial);
+            scene.updateMatrixWorld(true);
+            const position = new THREE.Vector3();
+            position.setFromMatrixPosition(objsArr[0].object.matrixWorld);
+            outlineMesh.position.set(position.x, position.y, position.z);
+            outlineMesh.rotation.set(0, Math.PI / 6, 0);
+            outlineMesh.scale.set(1.025, 1.025, 1.025);
+            outlineMesh.name = outlineName;
+            scene.add(outlineMesh);
+        }
+    }
+}
+
+function removeOutline(meshName) {
+    const outlineName = meshName + 'Outline'
+    const outline = scene.getObjectByName(outlineName);
+    if(outline) {
+        scene.remove(outline)
+    }
+}
