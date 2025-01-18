@@ -1,16 +1,35 @@
 import * as THREE from 'three';
-import {GLTFLoader, OrbitControls} from "three/addons";
+import {
+    EffectComposer,
+    FXAAShader,
+    GLTFLoader,
+    OrbitControls,
+    OutlinePass,
+    OutputPass,
+    RenderPass,
+    ShaderPass
+} from "three/addons";
 
-//SETUP (RENDERER, SCENE, CAMERA)
-const renderer = new THREE.WebGLRenderer({antialias: true});
+
+// PRIMARY SETUP //
+
+//RENDERER
+const renderer = new THREE.WebGLRenderer({
+    // antialias: true
+});
 renderer.shadowMap.enabled = true;
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
+// renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x49bce3);
 document.body.appendChild(renderer.domElement);
 
+//ANTI-ALIAS EFFECT POST-PROCESS SHADER
+let effectFXAA;
+
+//SCENE
 const scene = new THREE.Scene();
 
+//CAMERA
 const camera = new THREE.PerspectiveCamera(
     45,
     window.innerWidth/window.innerHeight,
@@ -19,24 +38,33 @@ const camera = new THREE.PerspectiveCamera(
 )
 camera.position.set(0, 25, -30);
 
+//EVENT LISTENERS
 window.addEventListener('resize', function() {
     camera.aspect = window.innerWidth/window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    effectFXAA.uniforms['resolution'].value.set(1/window.innerWidth, 1/window.innerHeight);
 })
 
+renderer.domElement.addEventListener('pointermove', onPointerMove)
+
+
+// SECONDARY SETUPS //
+
 //ORBIT CONTROLS
-const orbit = new OrbitControls(camera, renderer.domElement)
+const orbit = new OrbitControls(camera, renderer.domElement);
 
 //RAYCASTER
 const raycaster = new THREE.Raycaster();
 
-//MOUSE POSITION TRACKING + POSITION NORMLIZATION
+//MOUSE POSITION
 const mousePosition = new THREE.Vector2();
-window.addEventListener('mousemove', function(e) {
-    mousePosition.x = (e.clientX/window.innerWidth) * 2 - 1;
-    mousePosition.y = -(e.clientY/window.innerHeight) * 2 + 1;
-});
+
+//SELECTED OBJS ARRAY
+let selectedObjs = [];
+
+
+// MISE-EN-SCENE //
 
 //3D MODELS LOADER
 const loader = new GLTFLoader();
@@ -45,7 +73,6 @@ loader.load(island, function(gltf) {
     const model = gltf.scene;
     scene.add(model);
     model.position.set(0, 0, 0);
-    model.rotation.set(0, Math.PI / 6, 0);
 }, undefined, function(error) {
     console.log(error);
 })
@@ -55,75 +82,57 @@ const ambient = new THREE.AmbientLight(0xffffff);
 const directional = new THREE.DirectionalLight(0xFFFFFF, 0.5);
 directional.position.set(30, 30, 0);
 scene.add(ambient);
-scene.add(directional)
+scene.add(directional);
 
+
+// POST-PROCESSING //
+
+const composer = new EffectComposer(renderer);
+
+const renderPass = new RenderPass(scene, camera);
+composer.addPass(renderPass);
+
+const outlinePass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), scene, camera);
+outlinePass.hiddenEdgeColor.set(new THREE.Color().setHex( 0xffffff ));
+outlinePass.edgeStrength = 7.5;
+outlinePass.edgeGlow = 0;
+outlinePass.edgeThickness = 1.5;
+composer.addPass(outlinePass);
+
+const outputPass = new OutputPass();
+composer.addPass(outputPass);
+
+effectFXAA = new ShaderPass(FXAAShader);
+effectFXAA.uniforms['resolution'].value.set(1/window.innerWidth, 1/window.innerHeight);
+composer.addPass(effectFXAA);
+
+
+// ANIMATION LAUNCH //
 
 renderer.setAnimationLoop(animate);
 
-function animate() {
-    renderer.render(scene, camera);
 
+// FUNCTIONS //
+
+function onPointerMove(event) {
+
+    //MOUSE POSITION TRACKING + POSITION NORMALIZATION
+    mousePosition.x = (event.clientX/window.innerWidth) * 2 - 1;
+    mousePosition.y = -(event.clientY/window.innerHeight) * 2 + 1;
+    //RAYCASTING
     raycaster.setFromCamera(mousePosition, camera);
     const intersectedObjs = raycaster.intersectObjects(scene.children);
-    const meshes = ['ocean', 'island', 'beach', 'lighthouse', 'church', 'houses', 'fishBarracks', 'dock'];
-    switch(intersectedObjs[0]?.object.name) {
-        case 'ocean':
-            outline(meshes, intersectedObjs, 'ocean');
-            break;
-        case 'island':
-            outline(meshes, intersectedObjs, 'island');
-            break;
-        case 'beach':
-            outline(meshes, intersectedObjs, 'beach');
-            break;
-        case 'lighthouse':
-            outline(meshes, intersectedObjs, 'lighthouse');
-            break;
-        case 'church':
-            outline(meshes, intersectedObjs, 'church');
-            break;
-        case 'houses':
-            outline(meshes, intersectedObjs, 'houses');
-            break;
-        case 'fishBarracks':
-            outline(meshes, intersectedObjs, 'fishBarracks');
-            break;
-        case 'dock':
-            outline(meshes, intersectedObjs, 'dock');
-            break;
-        default:
-            meshes.forEach(el => removeOutline(el));
+
+    if (intersectedObjs.length > 0) {
+        selectedObjs = [];
+        selectedObjs.push(intersectedObjs[0].object);
+        outlinePass.selectedObjects = selectedObjs;
+    } else {
+        outlinePass.selectedObjects = [];
     }
 }
 
-function outline(meshes, objsArr, meshName) {
-    const outlineName = meshName + 'Outline';
-
-    const otherMeshes = meshes.slice();
-    otherMeshes.splice(otherMeshes.indexOf(meshName), 1);
-    otherMeshes.forEach(el => removeOutline(el));
-
-    if(objsArr[0]?.object.name === meshName) {
-        const outline = scene.getObjectByName(outlineName);
-        if(!outline) {
-            const outlineMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.BackSide});
-            const outlineMesh = new THREE.Mesh(objsArr[0]?.object.geometry, outlineMaterial);
-            scene.updateMatrixWorld(true);
-            const position = new THREE.Vector3();
-            position.setFromMatrixPosition(objsArr[0].object.matrixWorld);
-            outlineMesh.position.set(position.x, position.y, position.z);
-            outlineMesh.rotation.set(0, Math.PI / 6, 0);
-            outlineMesh.scale.set(1.025, 1.025, 1.025);
-            outlineMesh.name = outlineName;
-            scene.add(outlineMesh);
-        }
-    }
-}
-
-function removeOutline(meshName) {
-    const outlineName = meshName + 'Outline'
-    const outline = scene.getObjectByName(outlineName);
-    if(outline) {
-        scene.remove(outline)
-    }
+function animate() {
+    composer.render();
+    // renderer.render(scene, camera)
 }
