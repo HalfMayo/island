@@ -21,7 +21,7 @@ renderer.shadowMap.enabled = true;
 renderer.setSize(window.innerWidth, window.innerHeight);
 // renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x49bce3);
-document.body.appendChild(renderer.domElement);
+document.getElementById('canvas').appendChild(renderer.domElement);
 
 //ANTI-ALIAS EFFECT POST-PROCESS SHADER
 let effectFXAA;
@@ -76,10 +76,11 @@ loader.load(island, function(gltf) {
 }, undefined, function(error) {
     console.log(error);
 })
+const meshes = ['ocean', 'island', 'beach', 'lighthouse', 'church', 'houses', 'fishermenVillage', 'dock'];
 
 //LIGHTS
 const ambient = new THREE.AmbientLight(0xffffff);
-const directional = new THREE.DirectionalLight(0xFFFFFF, 0.5);
+const directional = new THREE.DirectionalLight(0xffcc99, 2);
 directional.position.set(30, 30, 0);
 scene.add(ambient);
 scene.add(directional);
@@ -122,14 +123,54 @@ function onPointerMove(event) {
     //RAYCASTING
     raycaster.setFromCamera(mousePosition, camera);
     const intersectedObjs = raycaster.intersectObjects(scene.children);
-
     if (intersectedObjs.length > 0) {
         selectedObjs = [];
         selectedObjs.push(intersectedObjs[0].object);
         outlinePass.selectedObjects = selectedObjs;
+        switch(intersectedObjs[0]?.object.name) {
+            case 'ocean':
+                showPlaceDescription( 'ocean');
+                break;
+            case 'island':
+                showPlaceDescription( 'island');
+                break;
+            case 'beach':
+                showPlaceDescription( 'beach');
+                break;
+            case 'lighthouse':
+                showPlaceDescription( 'lighthouse');
+                break;
+            case 'church':
+                showPlaceDescription( 'church');
+                break;
+            case 'houses':
+                showPlaceDescription( 'houses');
+                break;
+            case 'fishermenVillage':
+                showPlaceDescription( 'fishermenVillage');
+                break;
+            case 'dock':
+                showPlaceDescription( 'dock');
+                break;
+            default:
+                break;
+        }
     } else {
         outlinePass.selectedObjects = [];
+        hidePlaceDescription(meshes);
     }
+}
+
+function showPlaceDescription(placeName) {
+    document.getElementById(placeName).classList.remove('hidden');
+    hidePlaceDescription(meshes.filter(el => el !== placeName));
+}
+
+function hidePlaceDescription(arr) {
+    arr.forEach(el => {
+        const div = document.getElementById(el);
+        !div.classList.contains('hidden') ? div.classList.add('hidden') : '';
+    })
 }
 
 function animate() {
