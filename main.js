@@ -53,7 +53,7 @@ renderer.domElement.addEventListener('pointermove', onPointerMove)
 
 //ORBIT CONTROLS
 const orbit = new OrbitControls(camera, renderer.domElement);
-orbit.minPolarAngle = Math.PI / 2;
+orbit.maxPolarAngle = Math.PI / 2;
 
 //RAYCASTER
 const raycaster = new THREE.Raycaster();
