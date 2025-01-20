@@ -15,11 +15,11 @@ import {
 
 //RENDERER
 const renderer = new THREE.WebGLRenderer({
-    // antialias: true
+    antialias: true
 });
 renderer.shadowMap.enabled = true;
 renderer.setSize(window.innerWidth, window.innerHeight);
-// renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x49bce3);
 document.getElementById('canvas').appendChild(renderer.domElement);
 
@@ -53,6 +53,7 @@ renderer.domElement.addEventListener('pointermove', onPointerMove)
 
 //ORBIT CONTROLS
 const orbit = new OrbitControls(camera, renderer.domElement);
+orbit.minPolarAngle = Math.PI / 2;
 
 //RAYCASTER
 const raycaster = new THREE.Raycaster();
