@@ -26,10 +26,11 @@ document.getElementById('canvas').appendChild(renderer.domElement);
 //ANTI-ALIAS EFFECT POST-PROCESS SHADER
 let effectFXAA;
 
-//SCENE
+//SCENES
 const scene = new THREE.Scene();
+const sceneCube = new THREE.Scene();
 
-//CAMERA
+//CAMERAS
 const camera = new THREE.PerspectiveCamera(
     45,
     window.innerWidth/window.innerHeight,
@@ -38,10 +39,20 @@ const camera = new THREE.PerspectiveCamera(
 )
 camera.position.set(0, 25, -30);
 
+const cameraCube = new THREE.PerspectiveCamera(
+    45,
+    window.innerWidth/window.innerHeight,
+    0.1,
+    1000
+)
+cameraCube.position.set(0, 35, -30);
+
 //EVENT LISTENERS
 window.addEventListener('resize', function() {
     camera.aspect = window.innerWidth/window.innerHeight;
     camera.updateProjectionMatrix();
+    cameraCube.aspect = window.innerWidth/window.innerHeight;
+    cameraCube.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     effectFXAA.uniforms['resolution'].value.set(1/window.innerWidth, 1/window.innerHeight);
 })
@@ -54,6 +65,8 @@ renderer.domElement.addEventListener('pointermove', onPointerMove)
 //ORBIT CONTROLS
 const orbit = new OrbitControls(camera, renderer.domElement);
 orbit.maxPolarAngle = Math.PI / 2;
+const orbitCube = new OrbitControls(cameraCube, renderer.domElement);
+orbitCube.maxPolarAngle = Math.PI / 2;
 
 //RAYCASTER
 const raycaster = new THREE.Raycaster();
@@ -63,7 +76,11 @@ const mousePosition = new THREE.Vector2();
 
 //SELECTED OBJS ARRAY
 let selectedObjs = [];
-
+window.addEventListener('click', () => {
+    if(selectedObjs.length > 0) {
+        console.log(selectedObjs[0].name);
+    }
+})
 
 // MISE-EN-SCENE //
 
@@ -79,6 +96,12 @@ loader.load(island, function(gltf) {
 })
 const meshes = ['ocean', 'island', 'beach', 'lighthouse', 'church', 'houses', 'fishermenVillage', 'dock'];
 
+//MESHES
+const boxGeometry = new THREE.BoxGeometry();
+const boxMaterial = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+const box = new THREE.Mesh(boxGeometry, boxMaterial);
+sceneCube.add(box);
+
 //LIGHTS
 const ambient = new THREE.AmbientLight(0xffffff);
 const directional = new THREE.DirectionalLight(0xffcc99, 2);
@@ -86,9 +109,16 @@ directional.position.set(30, 30, 0);
 scene.add(ambient);
 scene.add(directional);
 
+const ambientCube = new THREE.AmbientLight(0xffffff);
+const directionalCube = new THREE.DirectionalLight(0xffcc99, 2);
+directionalCube.position.set(30, 30, 0);
+sceneCube.add(ambientCube);
+sceneCube.add(directionalCube);
+
 
 // POST-PROCESSING //
 
+//OUTLINE PP
 const composer = new EffectComposer(renderer);
 
 const renderPass = new RenderPass(scene, camera);
@@ -175,6 +205,6 @@ function hidePlaceDescription(arr) {
 }
 
 function animate() {
-    composer.render();
+    composer.render(scene, camera);
     // renderer.render(scene, camera)
 }
