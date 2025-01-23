@@ -6,10 +6,25 @@
     <style>
         body { margin: 0; }
         .hidden {display: none; }
+        .fadeToBlack {
+            animation-name: toBlack;
+            animation-duration: 2s;
+        }
+        @keyframes toBlack {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
-<div id="canvas" style="width: 100vw; height: 100vh; position: relative">
+<div id="canvas" style="width: 100vw; height: 100vh; position: relative; background-color: black">
     <div id="ocean" class="hidden" style="position: absolute; top: 10%; left: 25%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
         <h3 style="margin-bottom: 0.75rem">Ocean</h3>
         <h4 style="margin-top: 0.5rem">A very distinguished quaso</h4>
@@ -122,8 +137,9 @@
             semper eu.
         </p>
     </div>
-    <button id="back-button" type="button" class="hidden" style="position: absolute; bottom: 5%; right: 10%; border-radius: 0.5rem">BACK</button>
 </div>
+<button id="back-button" type="button" class="hidden" style="position: absolute; bottom: 5%; right: 10%; border-radius: 0.5rem">BACK</button>
+<div id="transition" style="width: 100vw; height: 100vh; position: relative; background-color: black"></div>
 <script src="/main.js" type="module"></script>
 </body>
 </html>

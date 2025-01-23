@@ -15,12 +15,15 @@ import {
 
 //RENDERER
 const renderer = new THREE.WebGLRenderer({
-    antialias: true
+    antialias: true,
+    alpha: true
 });
 renderer.shadowMap.enabled = true;
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x49bce3);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.domElement.id = 'ThreeScene';
 document.getElementById('canvas').appendChild(renderer.domElement);
 
 //SCENES
@@ -51,22 +54,36 @@ window.addEventListener('resize', function() {
 
 document.getElementById('canvas').addEventListener('click', () => {
     if(selectedObjs.length > 0) {
-        console.log('quaso', selectedObjs[0].name);
-        sceneToDisplay = sceneCube;
-        outlinePass.selectedObjects = [];
+        document.getElementById('ThreeScene').classList.add('fadeToBlack');
+        renderer.domElement.removeEventListener('pointermove', onPointerMove);
         hidePlaceDescription(meshes);
-        launchPostProcessing(composer);
-        document.getElementById('back-button').classList.remove('hidden')
+        setTimeout(() => {
+            sceneToDisplay = sceneCube;
+
+            launchPostProcessing(composer);
+            document.getElementById('back-button').classList.remove('hidden')
+        }, 1000);
+        setTimeout(() => {
+            document.getElementById('ThreeScene').classList.remove('fadeToBlack');
+            renderer.domElement.addEventListener('pointermove', onPointerMove);
+        }, 2000)
     }
 })
 
 document.getElementById('back-button').addEventListener('click', () => {
-    console.log('quaso');
-    sceneToDisplay = scene;
-    outlinePass.selectedObjects = [];
-    hidePlaceDescription(meshes);
-    launchPostProcessing(composer);
-    document.getElementById('back-button').classList.add('hidden');
+    document.getElementById('ThreeScene').classList.add('fadeToBlack');
+    renderer.domElement.removeEventListener('pointermove', onPointerMove);
+    setTimeout(() => {
+        sceneToDisplay = scene;
+        outlinePass.selectedObjects = [];
+        hidePlaceDescription(meshes);
+        launchPostProcessing(composer);
+        document.getElementById('back-button').classList.add('hidden');
+    }, 1000)
+    setTimeout(() => {
+        document.getElementById('ThreeScene').classList.remove('fadeToBlack');
+        renderer.domElement.addEventListener('pointermove', onPointerMove);
+    }, 2000)
 })
 
 renderer.domElement.addEventListener('pointermove', onPointerMove)
@@ -113,12 +130,6 @@ directional.position.set(30, 30, 0);
 scene.add(ambient);
 scene.add(directional);
 
-const ambientCube = new THREE.AmbientLight(0xffffff);
-const directionalCube = new THREE.DirectionalLight(0xffcc99, 2);
-directionalCube.position.set(30, 30, 0);
-sceneCube.add(ambientCube);
-sceneCube.add(directionalCube);
-
 
 // POST-PROCESSING //
 
@@ -142,7 +153,7 @@ function onPointerMove(event) {
     //RAYCASTING
     if(sceneToDisplay === scene) {
         raycaster.setFromCamera(mousePosition, camera);
-        const intersectedObjs = raycaster.intersectObjects(scene.children);
+        const intersectedObjs = raycaster.intersectObjects(sceneToDisplay.children);
         if (intersectedObjs.length > 0) {
             selectedObjs = [];
             selectedObjs.push(intersectedObjs[0].object);
@@ -177,6 +188,7 @@ function onPointerMove(event) {
             }
         } else {
             outlinePass.selectedObjects = [];
+            selectedObjs = [];
             hidePlaceDescription(meshes);
         }
     }
