@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import * as dat from 'dat.gui'
 import {
     EffectComposer,
     FXAAShader,
@@ -15,12 +16,12 @@ import {
 
 //RENDERER
 const renderer = new THREE.WebGLRenderer({
-    antialias: true,
+    // antialias: true,
     alpha: true
 });
 renderer.shadowMap.enabled = true;
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
+// renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x49bce3);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.domElement.id = 'ThreeScene';
@@ -62,7 +63,9 @@ document.getElementById('canvas').addEventListener('click', () => {
         setTimeout(() => {
             sceneToDisplay = sceneCube;
             launchPostProcessing(composer);
-            document.getElementById('back-button').classList.remove('hidden')
+            document.getElementById('back-button').classList.remove('hidden');
+            camera.position.set(1, 5, 0);
+            orbit.update();
         }, 1000);
         setTimeout(() => {
             document.getElementById('ThreeScene').classList.remove('fadeToBlack');
@@ -81,11 +84,17 @@ document.getElementById('back-button').addEventListener('click', () => {
         hidePlaceDescription(meshes);
         launchPostProcessing(composer);
         document.getElementById('back-button').classList.add('hidden');
+        camera.position.set(0, 25, -30);
+        orbit.update();
     }, 1000)
     setTimeout(() => {
         document.getElementById('ThreeScene').classList.remove('fadeToBlack');
         renderer.domElement.addEventListener('pointermove', onPointerMove);
     }, 2000)
+})
+
+document.getElementById('log').addEventListener('click', () => {
+    console.log(camera)
 })
 
 renderer.domElement.addEventListener('pointermove', onPointerMove)
@@ -116,14 +125,17 @@ loader.load(island, function(gltf) {
 }, undefined, function(error) {
     console.log(error);
 })
-const meshes = ['ocean', 'island', 'beach', 'lighthouse', 'church', 'houses', 'fishermenVillage', 'dock'];
 
-//MESHES
-const boxGeometry = new THREE.BoxGeometry();
-const boxMaterial = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
-const box = new THREE.Mesh(boxGeometry, boxMaterial);
-box.rotation.set(3, 5, 0);
-sceneCube.add(box);
+const village = new URL('./src/village.glb', import.meta.url).href;
+loader.load(village, function(gltf) {
+    const model = gltf.scene;
+    sceneCube.add(model);
+    model.position.set(0, 0, 0);
+}, undefined, function(error) {
+    console.log(error);
+})
+
+const meshes = ['ocean', 'island', 'beach', 'lighthouse', 'church', 'houses', 'fishermenVillage', 'dock'];
 
 //LIGHTS
 const ambient = new THREE.AmbientLight(0xffffff);
@@ -132,6 +144,11 @@ directional.position.set(30, 30, 0);
 scene.add(ambient);
 scene.add(directional);
 
+const ambientCube = new THREE.AmbientLight(0xffffff);
+const directionalCube = new THREE.DirectionalLight(0xffcc99, 2);
+directionalCube.position.set(30, 30, 0);
+sceneCube.add(ambientCube);
+sceneCube.add(directionalCube);
 
 // POST-PROCESSING //
 
