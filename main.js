@@ -54,12 +54,13 @@ window.addEventListener('resize', function() {
 
 document.getElementById('canvas').addEventListener('click', () => {
     if(selectedObjs.length > 0) {
+        selectedObjs = [];
+        outlinePass.selectedObjects = [];
         document.getElementById('ThreeScene').classList.add('fadeToBlack');
         renderer.domElement.removeEventListener('pointermove', onPointerMove);
         hidePlaceDescription(meshes);
         setTimeout(() => {
             sceneToDisplay = sceneCube;
-
             launchPostProcessing(composer);
             document.getElementById('back-button').classList.remove('hidden')
         }, 1000);
@@ -75,6 +76,7 @@ document.getElementById('back-button').addEventListener('click', () => {
     renderer.domElement.removeEventListener('pointermove', onPointerMove);
     setTimeout(() => {
         sceneToDisplay = scene;
+        selectedObjs = [];
         outlinePass.selectedObjects = [];
         hidePlaceDescription(meshes);
         launchPostProcessing(composer);

@@ -24,7 +24,7 @@
     </style>
 </head>
 <body>
-<div id="canvas" style="width: 100vw; height: 100vh; position: relative; background-color: black">
+<div id="canvas" style="width: 100vw; height: 100vh; position: relative; background-color: black; z-index: 10">
     <div id="ocean" class="hidden" style="position: absolute; top: 10%; left: 25%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
         <h3 style="margin-bottom: 0.75rem">Ocean</h3>
         <h4 style="margin-top: 0.5rem">A very distinguished quaso</h4>
@@ -138,8 +138,8 @@
         </p>
     </div>
 </div>
-<button id="back-button" type="button" class="hidden" style="position: absolute; bottom: 5%; right: 10%; border-radius: 0.5rem">BACK</button>
-<div id="transition" style="width: 100vw; height: 100vh; position: relative; background-color: black"></div>
+<button id="back-button" type="button" class="hidden" style="position: absolute; bottom: 5%; right: 10%; border-radius: 0.5rem; z-index: 15">BACK</button>
+<div id="transition" style="width: 100vw; height: 100vh; position: absolute; top:0; left:0; background-color: black;"></div>
 <script src="/main.js" type="module"></script>
 </body>
 </html>
