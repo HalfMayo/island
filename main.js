@@ -64,8 +64,17 @@ document.getElementById('canvas').addEventListener('click', () => {
             sceneToDisplay = sceneCube;
             launchPostProcessing(composer);
             document.getElementById('back-button').classList.remove('hidden');
-            camera.position.set(1, 5, 0);
+            orbit.minPolarAngle = 1.0890233215601084;
+            orbit.maxPolarAngle = 1.0890233215601084;
+            orbit.minAzimuthAngle = 3.1131833756372114;
+            orbit.maxAzimuthAngle = 3.1131833756372114;
+            orbit.minDistance = 1.447426214299535;
+            orbit.maxDistance = 1.447426214299535;
             orbit.update();
+            orbit.minPolarAngle = 0;
+            orbit.maxPolarAngle = Math.PI / 2;
+            orbit.minAzimuthAngle = -Infinity;
+            orbit.maxAzimuthAngle = Infinity;
         }, 1000);
         setTimeout(() => {
             document.getElementById('ThreeScene').classList.remove('fadeToBlack');
@@ -91,10 +100,6 @@ document.getElementById('back-button').addEventListener('click', () => {
         document.getElementById('ThreeScene').classList.remove('fadeToBlack');
         renderer.domElement.addEventListener('pointermove', onPointerMove);
     }, 2000)
-})
-
-document.getElementById('log').addEventListener('click', () => {
-    console.log(camera)
 })
 
 renderer.domElement.addEventListener('pointermove', onPointerMove)
@@ -130,7 +135,7 @@ const village = new URL('./src/village.glb', import.meta.url).href;
 loader.load(village, function(gltf) {
     const model = gltf.scene;
     sceneCube.add(model);
-    model.position.set(0, 0, 0);
+    model.position.set(-1.25, -4.85, -1.85);
 }, undefined, function(error) {
     console.log(error);
 })
