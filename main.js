@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import * as dat from 'dat.gui'
 import {
     EffectComposer,
     FXAAShader,
