@@ -9,6 +9,7 @@ import {
     RenderPass,
     ShaderPass
 } from "three/addons";
+import { SobelOperatorShader } from 'three/addons/shaders/SobelOperatorShader.js';
 
 
 // PRIMARY SETUP //
@@ -42,7 +43,7 @@ camera.position.set(0, 25, -30);
 
 //PP VARIABLES
 let selectedObjs = [];
-let renderPass, outlinePass, outputPass, effectFXAA;
+let renderPass, effectSobel, outlinePass, outputPass, effectFXAA;
 
 //EVENT LISTENERS
 window.addEventListener('resize', function() {
@@ -50,6 +51,8 @@ window.addEventListener('resize', function() {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     effectFXAA.uniforms['resolution'].value.set(1/window.innerWidth, 1/window.innerHeight);
+    // effectSobel.uniforms[ 'resolution' ].value.x = window.innerWidth * window.devicePixelRatio;
+    // effectSobel.uniforms[ 'resolution' ].value.y = window.innerHeight * window.devicePixelRatio;
 })
 
 document.getElementById('canvas').addEventListener('click', () => {
@@ -92,6 +95,8 @@ document.getElementById('back-button').addEventListener('click', () => {
         hidePlaceDescription(meshes);
         launchPostProcessing(composer);
         document.getElementById('back-button').classList.add('hidden');
+        orbit.minDistance = 0;
+        orbit.maxDistance = Infinity;
         camera.position.set(0, 25, -30);
         orbit.update();
     }, 1000)
@@ -232,6 +237,11 @@ function hidePlaceDescription(arr) {
 function launchPostProcessing(composer) {
     renderPass = new RenderPass(sceneToDisplay, camera);
     composer.addPass(renderPass);
+
+    // effectSobel = new ShaderPass( SobelOperatorShader );
+    // effectSobel.uniforms[ 'resolution' ].value.x = window.innerWidth * window.devicePixelRatio;
+    // effectSobel.uniforms[ 'resolution' ].value.y = window.innerHeight * window.devicePixelRatio;
+    // composer.addPass( effectSobel );
 
     outlinePass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), sceneToDisplay, camera);
     outlinePass.hiddenEdgeColor.set(new THREE.Color().setHex( 0xffffff ));
