@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Island</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Galindo&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; }
         .hidden {display: none; }
+        .dM {
+            font-family: "DM Sans", serif;
+            font-optical-sizing: auto;
+            font-weight: 300;
+            font-style: normal;
+        }
+        .galindo {
+            font-family: "Galindo", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
         .fadeToBlack {
             animation-name: toBlack;
             animation-duration: 2s;
@@ -25,10 +40,10 @@
 </head>
 <body>
 <div id="canvas" style="width: 100vw; height: 100vh; position: relative; background-color: black; z-index: 10">
-    <div id="ocean" class="hidden" style="position: absolute; top: 10%; left: 25%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
-        <h3 style="margin-bottom: 0.75rem">Ocean</h3>
-        <h4 style="margin-top: 0.5rem">A very distinguished quaso</h4>
-        <p>
+    <div id="ocean" class="hidden" style="position: absolute; top: 10%; left: 5%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
+        <h3 class="galindo" style="font-size:36px; margin-bottom: 0.75rem">Ocean</h3>
+        <h4 class="dM" style="font-weight:600; font-size:24px; margin-top: 0.5rem">A very distinguished quaso</h4>
+        <p class="dM" style="padding-bottom: 16px">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Mauris auctor, mi non eleifend fermentum, eros tellus hendrerit risus,
             id elementum lacus lectus ut mauris. Vivamus consequat turpis et volutpat suscipit.
@@ -39,10 +54,10 @@
             semper eu.
         </p>
     </div>
-    <div id="island" class="hidden" style="position: absolute; top: 10%; left: 25%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
-        <h3 style="margin-bottom: 0.75rem">Lonely Island</h3>
-        <h4 style="margin-top: 0.5rem">A very distinguished sub quaso</h4>
-        <p>
+    <div id="island" class="hidden" style="position: absolute; top: 10%; left: 5%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
+        <h3 class="galindo" style="font-size:36px; margin-bottom: 0.75rem">Lonely Island</h3>
+        <h4 class="dM" style="font-weight:600; font-size:24px; margin-top: 0.5rem">A very distinguished sub quaso</h4>
+        <p class="dM" style="padding-bottom: 16px">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Mauris auctor, mi non eleifend fermentum, eros tellus hendrerit risus,
             id elementum lacus lectus ut mauris. Vivamus consequat turpis et volutpat suscipit.
@@ -53,10 +68,10 @@
             semper eu.
         </p>
     </div>
-    <div id="beach" class="hidden" style="position: absolute; top: 10%; left: 25%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
-        <h3 style="margin-bottom: 0.75rem">Beach</h3>
-        <h4 style="margin-top: 0.5rem">A very distinguished super quaso</h4>
-        <p>
+    <div id="beach" class="hidden" style="position: absolute; top: 10%; left: 5%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
+        <h3 class="galindo" style="font-size:36px; margin-bottom: 0.75rem">Beach</h3>
+        <h4 class="dM" style="font-weight:600; font-size:24px; margin-top: 0.5rem">A very distinguished super quaso</h4>
+        <p class="dM" style="padding-bottom: 16px">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Mauris auctor, mi non eleifend fermentum, eros tellus hendrerit risus,
             id elementum lacus lectus ut mauris. Vivamus consequat turpis et volutpat suscipit.
@@ -67,10 +82,10 @@
             semper eu.
         </p>
     </div>
-    <div id="dock" class="hidden" style="position: absolute; top: 10%; left: 25%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
-        <h3 style="margin-bottom: 0.75rem">Dock</h3>
-        <h4 style="margin-top: 0.5rem">A very distinguished super quaso</h4>
-        <p>
+    <div id="dock" class="hidden" style="position: absolute; top: 10%; left: 5%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
+        <h3 class="galindo" style="font-size:36px; margin-bottom: 0.75rem">Dock</h3>
+        <h4 class="dM" style="font-weight:600; font-size:24px; margin-top: 0.5rem">A very distinguished super quaso</h4>
+        <p class="dM" style="padding-bottom: 16px">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Mauris auctor, mi non eleifend fermentum, eros tellus hendrerit risus,
             id elementum lacus lectus ut mauris. Vivamus consequat turpis et volutpat suscipit.
@@ -81,10 +96,10 @@
             semper eu.
         </p>
     </div>
-    <div id="fishermenVillage" class="hidden" style="position: absolute; top: 10%; left: 25%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
-        <h3 style="margin-bottom: 0.75rem">Fishermen Village</h3>
-        <h4 style="margin-top: 0.5rem">A very distinguished quaso</h4>
-        <p>
+    <div id="fishermenVillage" class="hidden" style="position: absolute; top: 10%; left: 5%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
+        <h3 class="galindo" style="font-size:36px; margin-bottom: 0.75rem">Fishermen Village</h3>
+        <h4 class="dM" style="font-weight:600; font-size:24px; margin-top: 0.5rem">A very distinguished quaso</h4>
+        <p class="dM" style="padding-bottom: 16px">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Mauris auctor, mi non eleifend fermentum, eros tellus hendrerit risus,
             id elementum lacus lectus ut mauris. Vivamus consequat turpis et volutpat suscipit.
@@ -95,10 +110,10 @@
             semper eu.
         </p>
     </div>
-    <div id="houses" class="hidden" style="position: absolute; top: 10%; left: 25%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
-        <h3 style="margin-bottom: 0.75rem">Calmington</h3>
-        <h4 style="margin-top: 0.5rem">A very distinguished sub quaso</h4>
-        <p>
+    <div id="houses" class="hidden" style="position: absolute; top: 10%; left: 5%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
+        <h3 class="galindo" style="font-size:36px; margin-bottom: 0.75rem">Calmington</h3>
+        <h4 class="dM" style="font-weight:600; font-size:24px; margin-top: 0.5rem">A very distinguished sub quaso</h4>
+        <p class="dM" style="padding-bottom: 16px">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Mauris auctor, mi non eleifend fermentum, eros tellus hendrerit risus,
             id elementum lacus lectus ut mauris. Vivamus consequat turpis et volutpat suscipit.
@@ -109,10 +124,10 @@
             semper eu.
         </p>
     </div>
-    <div id="church" class="hidden" style="position: absolute; top: 10%; left: 25%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
-        <h3 style="margin-bottom: 0.75rem">Church of St. Christopher</h3>
-        <h4 style="margin-top: 0.5rem">A very distinguished quaso</h4>
-        <p>
+    <div id="church" class="hidden" style="position: absolute; top: 10%; left: 5%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
+        <h3 class="galindo" style="font-size:36px; margin-bottom: 0.75rem">Church of St. Christopher</h3>
+        <h4 class="dM" style="font-weight:600; font-size:24px; margin-top: 0.5rem">A very distinguished quaso</h4>
+        <p class="dM" style="padding-bottom: 16px">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Mauris auctor, mi non eleifend fermentum, eros tellus hendrerit risus,
             id elementum lacus lectus ut mauris. Vivamus consequat turpis et volutpat suscipit.
@@ -123,10 +138,10 @@
             semper eu.
         </p>
     </div>
-    <div id="lighthouse" class="hidden" style="position: absolute; top: 10%; left: 25%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
-        <h3 style="margin-bottom: 0.75rem">Old lighthouse</h3>
-        <h4 style="margin-top: 0.5rem">A very distinguished sub quaso</h4>
-        <p>
+    <div id="lighthouse" class="hidden" style="position: absolute; top: 10%; left: 5%; background-color: white; border-radius: 12px; padding: 16px 24px; width: 30vw">
+        <h3 class="galindo" style="font-size:36px; margin-bottom: 0.75rem">Old lighthouse</h3>
+        <h4 class="dM" style="font-weight:600; font-size:24px; margin-top: 0.5rem">A very distinguished sub quaso</h4>
+        <p class="dM" style="padding-bottom: 16px">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Mauris auctor, mi non eleifend fermentum, eros tellus hendrerit risus,
             id elementum lacus lectus ut mauris. Vivamus consequat turpis et volutpat suscipit.

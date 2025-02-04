@@ -106,8 +106,6 @@ document.getElementById('back-button').addEventListener('click', () => {
     }, 2000)
 })
 
-renderer.domElement.addEventListener('pointermove', onPointerMove)
-
 
 // SECONDARY SETUPS //
 
@@ -126,7 +124,7 @@ const mousePosition = new THREE.Vector2();
 
 //3D MODELS LOADER
 const loader = new GLTFLoader();
-const island = new URL('./src/island.glb', import.meta.url).href;
+const island = new URL('./src/islandOutline.glb', import.meta.url).href;
 loader.load(island, function(gltf) {
     const model = gltf.scene;
     scene.add(model);
@@ -219,6 +217,22 @@ function onPointerMove(event) {
             selectedObjs = [];
             hidePlaceDescription(meshes);
         }
+    } else if(sceneToDisplay === sceneCube) {
+        raycaster.setFromCamera(mousePosition, camera);
+        const intersectedObjs = raycaster.intersectObjects(sceneToDisplay.children);
+        if (intersectedObjs.length > 0) {
+            if(intersectedObjs[0].object.name === 'ocean' || intersectedObjs[0].object.name === 'island') {
+                outlinePass.selectedObjects = [];
+                selectedObjs = [];
+                return;
+            }
+            selectedObjs = [];
+            selectedObjs.push(intersectedObjs[0].object);
+            outlinePass.selectedObjects = selectedObjs;
+        } else {
+            outlinePass.selectedObjects = [];
+            selectedObjs = [];
+        }
     }
 }
 
@@ -256,6 +270,7 @@ function launchPostProcessing(composer) {
     effectFXAA = new ShaderPass(FXAAShader);
     effectFXAA.uniforms['resolution'].value.set(1/window.innerWidth, 1/window.innerHeight);
     composer.addPass(effectFXAA);
+    renderer.domElement.addEventListener('pointermove', onPointerMove)
 }
 
 function animate() {
